@@ -1,78 +1,658 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Precificação</title>
-  <style>
-    /* same styles as before */
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Sistema de Precificação</h1>
-  </header>
-  <main>
-    <section id="custos">
-      <h2>Identificação dos Custos</h2>
-      <form>
-        <label for="custo-fixo">Custo Fixo:</label>
-        <input type="number" id="custo-fixo" name="custo-fixo" value="0">
-        <label for="custo-variavel">Custo Variável:</label>
-        <input type="number" id="custo-variavel" name="custo-variavel" value="0">
-        <label for="investimento-inicial">Investimento Inicial:</label>
-        <input type="number" id="investimento-inicial" name="investimento-inicial" value="0">
-        <button type="button" id="calcular-custo-total">Calcular Custo Total</button>
-      </form>
-      <p id="custo-total">Custo Total: R$ 0,00</p>
-    </section>
-    <section id="analise-mercado">
-      <h2>Análise do Mercado</h2>
-      <form>
-        <label for="preco-concorrente">Preço Concorrente:</label>
-        <input type="number" id="preco-concorrente" name="preco-concorrente" value="0">
-        <label for="segmentacao-publico-alvo">Segmentação do Público-Alvo:</label>
-        <input type="text" id="segmentacao-publico-alvo" name="segmentacao-publico-alvo">
-        <button type="button" id="comparar-precos">Comparar Preços</button>
-      </form>
-      <p id="analise-mercado-resultado">Preço Concorrente: R$ 0,00 - Segmentação do Público-Alvo: </p>
-    </section>
-    <section id="preco-base">
-      <h2>Definição de Preço Base</h2>
-      <form>
-        <label for="custo-total">Custo Total:</label>
-        <input type="number" id="custo-total" name="custo-total" value="0">
-        <label for="margem-lucro">Margem de Lucro:</label>
-        <input type="number" id="margem-lucro" name="margem-lucro" value="0">
-        <button type="button" id="definir-preco-base">Definir Preço Base</button>
-      </form>
-      <p id="preco-base-resultado">Preço Base: R$ 0,00</p>
-    </section>
-    <section id="orcamento-anuncios">
-      <h2>Orçamento para Anúncios</h2>
-      <form>
-        <label for="preco-base">Preço Base:</label>
-        <input type="number" id="preco-base" name="preco-base" value="0">
-        <label for="canal">Canal:</label>
-        <input type="text" id="canal" name="canal">
-        <button type="button" id="calcular-orcamento">Calcular Orçamento</button>
-      </form>
-      <p id="orcamento-resultado">Orçamento para Anúncios: R$ 0,00 - Canal: </p>
-    </section>
-    <section id="resumo">
-      <h2>Resumo</h2>
-      <p id="resumo-custo-total">Custo Total: R$ 0,00</p>
-      <p id="resumo-preco-base">Preço Base: R$ 0,00</p>
-     <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Precificação</title>
-  <style>
-    /* same styles as before */
-  </style>
-</head>
-<body>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cenario de preco</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.11/jspdf.plugin.autotable.min.js"></script>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col justify-right items-center">
+    
 
+    
+    <!-- Menu de Navegação -->
+    <nav class="bg-violet-600 text-black p-4 shadow-lg">
+        <h1 class="text-2xl font-bold text-white mb-4 text-center">Cenário de Preço</h1>
+        <div class="flex flex-wrap justify-center space-x-2 border-[3px] border-purple-400 rounded-xl select-none p-2">
+            <button type="button" onclick="showSection('precificacao')" class="flex justify-center gap-2 items-center mx-auto shadow-xl text-xs sm:text-sm md:text-base lg:text-lg text-black bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-1 sm:px-2 md:px-3 lg:px-4 py-1 sm:py-1.5 md:py-2 lg:py-2.5 overflow-hidden border-2 rounded-full group">
+                Precificação
+                <svg class="w-4 sm:w-5 md:w-6 lg:w-8 h-4 sm:h-5 md:h-6 lg:h-8 justify-end group-hover:rotate-90 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-1 sm:p-1.5 md:p-2 lg:p-2.5 rotate-45" viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z" class="fill-gray-800 group-hover:fill-gray-800"></path>
+                </svg>
+            </button>
+            <button type="button" onclick="showSection('custos-variaveis')" class="flex justify-center gap-2 items-center mx-auto shadow-xl text-xs sm:text-sm md:text-base lg:text-lg text-black bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-1 sm:px-2 md:px-3 lg:px-4 py-1 sm:py-1.5 md:py-2 lg:py-2.5 overflow-hidden border-2 rounded-full group">
+                Custos Variáveis
+                <svg class="w-4 sm:w-5 md:w-6 lg:w-8 h-4 sm:h-5 md:h-6 lg:h-8 justify-end group-hover:rotate-90 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-1 sm:p-1.5 md:p-2 lg:p-2.5 rotate-45" viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z" class="fill-gray-800 group-hover:fill-gray-800"></path>
+                </svg>
+            </button>
+            <button type="button" onclick="showSection('custos-fixos')" class="flex justify-center gap-2 items-center mx-auto shadow-xl text-xs sm:text-sm md:text-base lg:text-lg text-black bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-1 sm:px-2 md:px-3 lg:px-4 py-1 sm:py-1.5 md:py-2 lg:py-2.5 overflow-hidden border-2 rounded-full group">
+                Custos Fixos
+                <svg class="w-4 sm:w-5 md:w-6 lg:w-8 h-4 sm:h-5 md:h-6 lg:h-8 justify-end group-hover:rotate-90 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-1 sm:p-1.5 md:p-2 lg:p-2.5 rotate-45" viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z" class="fill-gray-800 group-hover:fill-gray-800"></path>
+                </svg>
+            </button>
+            <button type="button" onclick="showSection('reinvestimento')" class="flex justify-center gap-2 items-center mx-auto shadow-xl text-xs sm:text-sm md:text-base lg:text-lg text-black bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-emerald-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700 relative z-10 px-1 sm:px-2 md:px-3 lg:px-4 py-1 sm:py-1.5 md:py-2 lg:py-2.5 overflow-hidden border-2 rounded-full group">
+                Reinvestimento
+                <svg class="w-4 sm:w-5 md:w-6 lg:w-8 h-4 sm:h-5 md:h-6 lg:h-8 justify-end group-hover:rotate-90 group-hover:bg-gray-50 text-gray-50 ease-linear duration-300 rounded-full border border-gray-700 group-hover:border-none p-1 sm:p-1.5 md:p-2 lg:p-2.5 rotate-45" viewBox="0 0 16 19" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 18C7 18.5523 7.44772 19 8 19C8.55228 19 9 18.5523 9 18H7ZM8.70711 0.292893C8.31658 -0.0976311 7.68342 -0.0976311 7.29289 0.292893L0.928932 6.65685C0.538408 7.04738 0.538408 7.68054 0.928932 8.07107C1.31946 8.46159 1.95262 8.46159 2.34315 8.07107L8 2.41421L13.6569 8.07107C14.0474 8.46159 14.6805 8.46159 15.0711 8.07107C15.4616 7.68054 15.4616 7.04738 15.0711 6.65685L8.70711 0.292893ZM9 18L9 1H7L7 18H9Z" class="fill-gray-800 group-hover:fill-gray-800"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Conteúdo das Páginas -->
+    <main class="container mx-auto p-6 space-y-8 flex flex-col items-center justify-center">
+        <div class="bg-white p-2 rounded-xl shadow-xl"></div>
+
+        <!-- Precificação -->
+        <body class="bg-gray-50 flex items-center justify-center min-h-screen">
+            <div class="bg-white p-2 rounded-xl shadow-xl"></div>
+        <section id="precificacao" class="hidden">
+            <h2 class="text-xl font-bold text-gray-800 mb-15">Precificação</h2>
+            <p class="text-sm text-gray-600 mb-4">As alterações são salvas automaticamente</p>
+            
+            <div class="grid gap-6">
+                
+                <div>
+                    <div class="bg-white p-2 rounded-xl shadow-xl">Escolha a Moeda</div>
+                    <select id="moeda" class="w-full mt-2 p-2 border rounded-xl" onchange="updatePlaceholder()">
+                        <option value="real">Real (R$)</option>
+                        <option value="dolar">Dólar ($)</option>
+                        <option value="euro">Euro (€)</option>
+                    </select>
+                    
+                </div>
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">Preço do Produto</label>
+                    <input id="preco-produto" type="text" placeholder="Digite o preço (R$ 0,00)" class="w-full mt-2 p-2 border rounded-lg" oninput="formatCurrency(this)">
+                </div>
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">Quantidade de Venda Média por Dia</label>
+                    <input id="quantidade-venda" type="text" placeholder="Digite a quantidade média" class="w-full mt-2 p-2 border rounded-lg" oninput="updateExtrato()">
+                </div>
+                
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">CPA</label>
+                    <input id="cpa" type="text" placeholder="Digite o preço (R$ 0,00)" class="w-full mt-2 p-2 border rounded-lg" oninput="formatCurrency(this)">
+                </div>
+        
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">ROAS (%)</label>
+                    <input id="roas" type="text" readonly class="w-full mt-2 p-2 border rounded-lg bg-gray-200">
+                </div>
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">Quantidade Vendida no Ano</label>
+                    <input id="quantidade-vendida-anual" type="text" readonly class="w-full mt-2 p-2 border rounded-lg bg-gray-200">
+                </div>
+                <div>
+                    <label class="block text-lg font-medium text-gray-700">CAC Total do Ano</label>
+                    <input id="cac-total-anual" type="text" readonly class="w-full mt-2 p-2 border rounded-lg bg-gray-200">
+                </div>
+            </div>
+        </section>
+
+        <!-- Custos Variáveis -->
+        <section id="custos-variaveis" class="hidden">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Custos Variáveis</h1>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all" onclick="adicionarVariavel()">+ Adicionar Custo Variável</button>
+    <p class="text-sm text-gray-600 mb-4">As alterações são salvas automaticamente</p>
+    <div class="grid gap-6" id="custos-variaveis-lista">
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Taxa do Gateway</label>
+            <input id="taxa-gateway" type="text" placeholder="Digite a taxa (%)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateTaxaGateway()">
+            <span id="taxa-gateway-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Margem de Reembolso</label>
+            <input id="margem-reembolso" type="text" placeholder="Digite a margem (%)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateMargemReembolso()">
+            <span id="margem-reembolso-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Imposto</label>
+            <input id="imposto" type="text" placeholder="Digite o imposto (%)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateImposto()">
+            <span id="imposto-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Hospedagem Vídeo</label>
+            <input id="hospedagem-video" type="number" placeholder="Digite o valor (R$ 0,00)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateHospedagemVideo()">
+            <span id="hospedagem-video-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+    </div>
+    <div class="flex items-center justify-between mt-4">
+        <label class="text-lg font-medium text-gray-700 w-1/3">Total Custos Variáveis</label>
+        <span id="total-custos-variaveis" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+    </div>
+</section>
+
+        <!-- Custos Fixos -->
+        <section id="custos-fixos" class="hidden">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Custos Fixos</h1>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all" onclick="adicionarCustoFixo()">+ Adicionar Custo Fixo</button>
+    <p class="text-sm text-gray-600 mb-4">As alterações são salvas automaticamente</p>
+    <div class="grid gap-6" id="custos-fixos-lista">
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Funcionário</label>
+            <input id="funcionario" type="text" placeholder="Digite o valor (%) ou valor fixo" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorFixo(this)">
+            <span id="funcionario-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Pró-Labore</label>
+            <input id="pro-labore" type="text" placeholder="Digite o valor (%) ou valor fixo" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorFixo(this)">
+            <span id="pro-labore-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+    </div>
+    <div class="flex items-center justify-between mt-4">
+        <label class="text-lg font-medium text-gray-700 w-1/3">Total Custos Fixos</label>
+        <span id="total-custos-fixos" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+    </div>
+</section>
+
+        <!-- Reinvestimento -->
+        <section id="reinvestimento" class="hidden">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Reinvestimento</h1>
+    <p class="text-sm text-gray-600 mb-4">As alterações são salvas automaticamente</p>
+    <div class="grid gap-6">
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">Reinvestimento (%)</label>
+            <input id="reinvestimento" type="text" placeholder="Digite a porcentagem (%)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorReinvestimento(this)">
+            <span id="reinvestimento-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-medium text-gray-700 w-1/3">MMO (Margem Melhorar a Oferta) (%)</label>
+            <input id="mmo" type="text" placeholder="Digite a porcentagem (%)" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorReinvestimento(this)">
+            <span id="mmo-valor" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+        </div>
+    </div>
+    <div class="flex items-center justify-between mt-4">
+        <label class="text-lg font-medium text-gray-700 w-1/3">Total Reinvestimento</label>
+        <span id="total-reinvestimento" class="text-lg font-medium text-gray-700 w-1/3 text-right currency-symbol-left">0,00</span>
+    </div>
+    <button onclick="gerarPDF()" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all">Baixar Extrato em PDF</button>
+</section>
+    </main>
+        <body class="bg-gray-100 min-h-screen flex flex-col justify-right items-center">
+        <!-- Layout Adicional -->
+        <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 mt-6">
+            <div class="bg-gray-200 p-4 rounded-t-lg">
+                <h2 class="text-lg font-semibold">Extrato do negócio neste cenário (12 meses)</h2>
+                <p class="text-sm text-gray-600">Você precisa preencher os dados ao lado</p>
+            </div>
+            <div class="bg-gray-100 p-4 rounded-b-lg">
+                <div class="bg-gray-300 p-2 rounded-t-lg flex justify-between">
+                    <span class="font-semibold">Receita do produto</span>
+                    <span id="receita-produto" class="text-green-600 font-semibold">+ R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>CAC Total</span>
+                    <span id="cac-total" class="text-red-600">- R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Custos Variáveis</span>
+                    <span id="custos-variaveis-total" class="text-red-600">- R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Custo Fixos</span>
+                    <span id="custos-fixos-total" class="text-red-600">- R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Margem para Melhorar Oferta</span>
+                    <span id="mmo-total" class="text-red-600">- R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Total de Saídas</span>
+                    <span id="total-saidas" class="text-red-600">- R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Reeinvestimento (Fluxo de Caixa)</span>
+                    <span id="reinvestimento-total" class="text-yellow-600">R$ 0,00</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Caixa</span>
+                    <span id="caixa-total" class="text-red-600">R$ 0,00</span>
+                </div>
+                <div class="bg-gray-300 p-2 rounded-b-lg flex justify-between">
+                    <span class="font-semibold">SALDO RETIRADA</span>
+                    <span id="saldo-retirada" class="text-red-600 font-semibold">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="bg-gray-200 p-4 mt-6 rounded-t-lg">
+                <h2 class="text-lg font-semibold">Visão dos custos no preço unitário</h2>
+                <p class="text-sm text-gray-600">Você precisa preencher os dados ao lado</p>
+            </div>
+            <div class="bg-gray-100 p-4 rounded-b-lg">
+                <div class="p-2 flex justify-between">
+                    <span>Custo Mídia/ Unidade</span>
+                    <span id="custo-midia-unidade">R$ 0,00</span>
+                    <span id="custo-midia-unidade-percent">0%</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Custo Variável/ Unidade</span>
+                    <span id="custo-variavel-unidade">R$ 0,00</span>
+                    <span id="custo-variavel-unidade-percent">0%</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Custo Fixo/ Unidade</span>
+                    <span id="custo-fixo-unidade">R$ 0,00</span>
+                    <span id="custo-fixo-unidade-percent">0%</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>MMO</span>
+                    <span id="mmo-unidade">R$ 0,00</span>
+                    <span id="mmo-unidade-percent">0%</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Reeinvestimento/Unidade</span>
+                    <span id="reinvestimento-unidade">R$ 0,00</span>
+                    <span id="reinvestimento-unidade-percent">0%</span>
+                </div>
+                <div class="p-2 flex justify-between">
+                    <span>Lucro Liquido/ Unidade</span>
+                    <span id="lucro-liquido-unidade">R$ 0,00</span>
+                    <span id="lucro-liquido-unidade-percent">0%</span>
+                </div>
+                <div class="bg-gray-300 p-2 rounded-b-lg flex justify-between">
+                    <span class="font-semibold">Preço do Produto</span>
+                    <span id="preco-produto-unidade">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <!-- Script para Alternar Seções -->
+    <script>
+        function showSection(sectionId) {
+            // Esconde todas as seções
+            document.querySelectorAll('main > section').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Mostra a seção selecionada
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Mostra a seção inicial (Precificação)
+        showSection('precificacao');
+
+        document.querySelectorAll('input[name="section"]').forEach(input => {
+            input.addEventListener('change', function() {
+                showSection(this.value);
+            });
+        });
+
+        function updatePlaceholder() {
+            const moeda = document.getElementById('moeda').value;
+            const precoProduto = document.getElementById('preco-produto');
+            const cpa = document.getElementById('cpa');
+            
+
+            if (moeda === 'real') {
+                precoProduto.placeholder = 'Digite o preço (R$ 0,00)';
+                cpa.placeholder = 'Digite o preço (R$ 0,00)';
+            } else if (moeda === 'dolar') {
+                precoProduto.placeholder = 'Digite o preço ($ 0,00)';
+                cpa.placeholder = 'Digite o preço ($ 0,00)';
+            } else if (moeda === 'euro') {
+                precoProduto.placeholder = 'Digite o preço (0,00 €)';
+                cpa.placeholder = 'Digite o preço (0,00 €)';
+            }
+            updateAllValues();
+            updateExtrato();
+            updateCurrencySymbols();
+        }
+
+        function updateCurrencySymbols() {
+            const moeda = document.getElementById('moeda').value;
+            const currencySymbol = moeda === 'real' ? 'R$' : moeda === 'dolar' ? '$' : '€';
+
+            document.querySelectorAll('.currency-symbol').forEach(element => {
+                element.innerText = currencySymbol;
+            });
+
+            document.querySelectorAll('.currency-symbol-left').forEach(element => {
+                element.innerText = currencySymbol;
+            });
+        }
+
+        function formatCurrency(input) {
+            const moeda = document.getElementById('moeda').value;
+            let value = input.value.replace(/\D/g, '');
+            value = (value / 100).toFixed(2);
+            value = value.replace('.', ',');
+
+            if (moeda === 'real') {
+                input.value = `R$ ${value}`;
+            } else if (moeda === 'dolar') {
+                input.value = `$ ${value}`;
+            } else if (moeda === 'euro') {
+                input.value = `${value} €`;
+            }
+
+            calculateROAS();
+            calculateQuantidadeVendidaAnual();
+            calculateCACTotalAnual();
+            updateAllValues();
+            updateExtrato();
+        }
+
+        function calculateROAS() {
+            const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+            const receitaDiaria = precoProduto * quantidadeVenda;
+            const cpa = parseFloat(document.getElementById('cpa').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const custoTotalDiario = cpa * quantidadeVenda;
+            const roas = receitaDiaria && custoTotalDiario ? (receitaDiaria / custoTotalDiario).toFixed(2) : 0;
+            document.getElementById('roas').value = `${roas}`;
+        }
+  
+        function adicionarVariavel() {
+            const custosVariaveis = document.querySelector("#custos-variaveis-lista");
+            const novaVariavel = document.createElement("div");
+            novaVariavel.classList.add("flex", "items-center", "justify-between", "bg-white", "p-4", "rounded-lg", "shadow-md");
+            novaVariavel.innerHTML = `
+                <input type="text" placeholder="Nome da Variável" class="w-1/3 mt-2 p-2 border rounded-lg" onkeypress="permanecerNome(event, this)">
+                <input type="text" placeholder="Digite o valor (%) ou valor fixo" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorVariavel(this)">
+                <span class="text-lg font-medium text-gray-700 w-1/3 text-right">R$ 0,00</span>
+                <button class="text-red-500 hover:text-red-700 ml-4" onclick="removerVariavel(this)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            custosVariaveis.appendChild(novaVariavel);
+        }
+
+        function permanecerNome(event, input) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const label = document.createElement('label');
+                label.classList.add('text-lg', 'font-medium', 'text-gray-700', 'w-1/3');
+                label.textContent = input.value;
+                input.replaceWith(label);
+            }
+        }
+
+        function removerVariavel(button) {
+            const variavel = button.parentElement;
+            variavel.remove();
+            updateTotalCustosVariaveis();
+        }
+
+        function updateValorVariavel(input) {
+            const valorInput = input.value.trim();
+            let valor = 0;
+
+            if (valorInput.endsWith('%')) {
+                const valorPercentual = parseFloat(valorInput.slice(0, -1)) || 0;
+                const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+                valor = (valorPercentual / 100) * precoProduto * quantidadeVenda * 365;
+            } else {
+                valor = parseFloat(valorInput.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            }
+
+            input.nextElementSibling.innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+            updateTotalCustosVariaveis();
+        }
+
+        function calculateQuantidadeVendidaAnual() {
+            const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+            const quantidadeVendidaAnual = quantidadeVenda * 365;
+            document.getElementById('quantidade-vendida-anual').value = quantidadeVendidaAnual.toLocaleString('pt-BR');
+        }
+
+        function calculateCACTotalAnual() {
+            const moeda = document.getElementById('moeda').value;
+            const cpa = parseFloat(document.getElementById('cpa').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+            const cacTotalAnual = cpa * quantidadeVenda * 365;
+
+            if (moeda === 'real') {
+                document.getElementById('cac-total-anual').value = cacTotalAnual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            } else if (moeda === 'dolar') {
+                document.getElementById('cac-total-anual').value = cacTotalAnual.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            } else if (moeda === 'euro') {
+                document.getElementById('cac-total-anual').value = cacTotalAnual.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            }
+        }
+
+        function updateTaxaGateway() {
+        const taxaGateway = parseFloat(document.getElementById('taxa-gateway').value) || 0;
+        const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+        const valor = (taxaGateway / 100) * precoProduto * quantidadeVenda * 365;
+        document.getElementById('taxa-gateway-valor').innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+        updateTotalCustosVariaveis();
+    }
+
+    function updateMargemReembolso() {
+        const margemReembolso = parseFloat(document.getElementById('margem-reembolso').value) || 0;
+        const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+        const valor = (margemReembolso / 100) * precoProduto * quantidadeVenda * 365;
+        document.getElementById('margem-reembolso-valor').innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+        updateTotalCustosVariaveis();
+    }
+
+    function updateImposto() {
+        const imposto = parseFloat(document.getElementById('imposto').value) || 0;
+        const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+        const valor = (imposto / 100) * precoProduto * quantidadeVenda * 365;
+        document.getElementById('imposto-valor').innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+        updateTotalCustosVariaveis();
+    }
+
+    function updateHospedagemVideo() {
+        const hospedagemVideo = parseFloat(document.getElementById('hospedagem-video').value) || 0;
+        document.getElementById('hospedagem-video-valor').innerText = `R$ ${hospedagemVideo.toFixed(2).replace('.', ',')}`;
+        updateTotalCustosVariaveis();
+    }
+
+    function updateTotalCustosVariaveis() {
+        let total = 0;
+        document.querySelectorAll("#custos-variaveis-lista span").forEach(span => {
+            total += parseFloat(span.innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        });
+        document.getElementById('total-custos-variaveis').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        updateExtrato();
+    }
+
+        function updateCustosFixos() {
+            // Adicione aqui a lógica para atualizar os custos fixos com base nas informações de precificação
+        }
+
+        function updateReinvestimento() {
+            // Adicione aqui a lógica para atualizar os valores de reinvestimento com base nas informações de precificação
+        }
+
+        function updateAllValues() {
+            updateTaxaGateway();
+            updateMargemReembolso();
+            updateImposto();
+            updateHospedagemVideo();
+            updateCustosFixos();
+            updateReinvestimento();
+        }
+
+        function adicionarCustoFixo() {
+            const custosFixos = document.querySelector("#custos-fixos-lista");
+            const novoCustoFixo = document.createElement("div");
+            novoCustoFixo.classList.add("flex", "items-center", "justify-between", "bg-white", "p-4", "rounded-lg", "shadow-md");
+            novoCustoFixo.innerHTML = `
+                <input type="text" placeholder="Nome do Custo Fixo" class="w-1/3 mt-2 p-2 border rounded-lg" onkeypress="permanecerNome(event, this)">
+                <input type="text" placeholder="Digite o valor (%) ou valor fixo" class="w-1/3 mt-2 p-2 border rounded-lg" oninput="updateValorFixo(this)">
+                <span class="text-lg font-medium text-gray-700 w-1/3 text-right">R$ 0,00</span>
+                <button class="text-red-500 hover:text-red-700 ml-4" onclick="removerCustoFixo(this)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            custosFixos.appendChild(novoCustoFixo);
+        }
+
+        function updateValorFixo(input) {
+            const valorInput = input.value.trim();
+            let valor = 0;
+
+            if (valorInput.endsWith('%')) {
+                const valorPercentual = parseFloat(valorInput.slice(0, -1)) || 0;
+                const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+                valor = (valorPercentual / 100) * precoProduto * quantidadeVenda * 365;
+            } else {
+                valor = parseFloat(valorInput.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+            }
+
+            input.nextElementSibling.innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+            updateTotalCustosFixos();
+        }
+
+        function updateTotalCustosFixos() {
+        let total = 0;
+        document.querySelectorAll("#custos-fixos-lista span").forEach(span => {
+            total += parseFloat(span.innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        });
+        document.getElementById('total-custos-fixos').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        updateExtrato();
+    }
+
+        function removerCustoFixo(button) {
+            const custoFixo = button.parentElement;
+            custoFixo.remove();
+            updateTotalCustosFixos();
+        }
+
+        function updateValorReinvestimento(input) {
+        const valorPercentual = parseFloat(input.value) || 0;
+        const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+        const valor = (valorPercentual / 100) * precoProduto * quantidadeVenda * 365;
+
+        input.nextElementSibling.innerText = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+        updateTotalReinvestimento();
+    }
+
+    function updateTotalReinvestimento() {
+        const reinvestimento = parseFloat(document.getElementById('reinvestimento-valor').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const mmo = parseFloat(document.getElementById('mmo-valor').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const total = reinvestimento + mmo;
+        document.getElementById('total-reinvestimento').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        updateExtrato();
+    }
+
+        function removerReinvestimento(button) {
+            const reinvestimento = button.parentElement;
+            reinvestimento.remove();
+        }
+
+        function updateExtrato() {
+        const moeda = document.getElementById('moeda').value;
+        const currencySymbol = moeda === 'real' ? 'R$' : moeda === 'dolar' ? '$' : '€';
+
+        const precoProduto = parseFloat(document.getElementById('preco-produto').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        const quantidadeVenda = parseFloat(document.getElementById('quantidade-venda').value) || 0;
+        const receitaProduto = precoProduto * quantidadeVenda * 365;
+        document.getElementById('receita-produto').innerText = `+ ${currencySymbol} ${receitaProduto.toFixed(2).replace('.', ',')}`;
+
+        const cacTotal = parseFloat(document.getElementById('cac-total-anual').value.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        document.getElementById('cac-total').innerText = `- ${currencySymbol} ${cacTotal.toFixed(2).replace('.', ',')}`;
+
+        const custosVariaveisTotal = parseFloat(document.getElementById('total-custos-variaveis').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        document.getElementById('custos-variaveis-total').innerText = `- ${currencySymbol} ${custosVariaveisTotal.toFixed(2).replace('.', ',')}`;
+
+        const custosFixosTotal = parseFloat(document.getElementById('total-custos-fixos').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        document.getElementById('custos-fixos-total').innerText = `- ${currencySymbol} ${custosFixosTotal.toFixed(2).replace('.', ',')}`;
+
+        const mmoTotal = parseFloat(document.getElementById('mmo-valor').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        document.getElementById('mmo-total').innerText = `- ${currencySymbol} ${mmoTotal.toFixed(2).replace('.', ',')}`;
+
+        const totalSaidas = cacTotal + custosVariaveisTotal + custosFixosTotal + mmoTotal;
+        document.getElementById('total-saidas').innerText = `- ${currencySymbol} ${totalSaidas.toFixed(2).replace('.', ',')}`;
+
+        const reinvestimentoTotal = parseFloat(document.getElementById('reinvestimento-valor').innerText.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+        document.getElementById('reinvestimento-total').innerText = `${currencySymbol} ${reinvestimentoTotal.toFixed(2).replace('.', ',')}`;
+
+        const caixaTotal = receitaProduto - totalSaidas - reinvestimentoTotal;
+        document.getElementById('caixa-total').innerText = `${currencySymbol} ${caixaTotal.toFixed(2).replace('.', ',')}`;
+
+        const saldoRetirada = caixaTotal;
+        document.getElementById('saldo-retirada').innerText = `${currencySymbol} ${saldoRetirada.toFixed(2).replace('.', ',')}`;
+
+        // Atualiza a visão dos custos no preço unitário
+        const custoMidiaUnidade = cacTotal / (quantidadeVenda * 365);
+        document.getElementById('custo-midia-unidade').innerText = `${currencySymbol} ${custoMidiaUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('custo-midia-unidade-percent').innerText = `${((custoMidiaUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        const custoVariavelUnidade = custosVariaveisTotal / (quantidadeVenda * 365);
+        document.getElementById('custo-variavel-unidade').innerText = `${currencySymbol} ${custoVariavelUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('custo-variavel-unidade-percent').innerText = `${((custoVariavelUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        const custoFixoUnidade = custosFixosTotal / (quantidadeVenda * 365);
+        document.getElementById('custo-fixo-unidade').innerText = `${currencySymbol} ${custoFixoUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('custo-fixo-unidade-percent').innerText = `${((custoFixoUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        const mmoUnidade = mmoTotal / (quantidadeVenda * 365);
+        document.getElementById('mmo-unidade').innerText = `${currencySymbol} ${mmoUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('mmo-unidade-percent').innerText = `${((mmoUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        const reinvestimentoUnidade = reinvestimentoTotal / (quantidadeVenda * 365);
+        document.getElementById('reinvestimento-unidade').innerText = `${currencySymbol} ${reinvestimentoUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('reinvestimento-unidade-percent').innerText = `${((reinvestimentoUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        const lucroLiquidoUnidade = precoProduto - (custoMidiaUnidade + custoVariavelUnidade + custoFixoUnidade + mmoUnidade + reinvestimentoUnidade);
+        document.getElementById('lucro-liquido-unidade').innerText = `${currencySymbol} ${lucroLiquidoUnidade.toFixed(2).replace('.', ',')}`;
+        document.getElementById('lucro-liquido-unidade-percent').innerText = `${((lucroLiquidoUnidade / precoProduto) * 100).toFixed(2)}%`;
+
+        document.getElementById('preco-produto-unidade').innerText = `${currencySymbol} ${precoProduto.toFixed(2).replace('.', ',')}`;
+    }
+    function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Adiciona título
+            doc.setFontSize(20);
+            doc.text("Extrato do Negócio - Cenário de 12 Meses", 10, 10);
+
+            // Adiciona Extrato
+            doc.setFontSize(14);
+            doc.text("Extrato do negócio neste cenário (12 meses)", 10, 20);
+            doc.setFontSize(12);
+            doc.text(`Receita do produto: ${document.getElementById('receita-produto').innerText}`, 10, 30);
+            doc.text(`CAC Total: ${document.getElementById('cac-total').innerText}`, 10, 35);
+            doc.text(`Custos Variáveis: ${document.getElementById('custos-variaveis-total').innerText}`, 10, 40);
+            doc.text(`Custos Fixos: ${document.getElementById('custos-fixos-total').innerText}`, 10, 45);
+            doc.text(`Margem para Melhorar Oferta: ${document.getElementById('mmo-total').innerText}`, 10, 50);
+            doc.text(`Total de Saídas: ${document.getElementById('total-saidas').innerText}`, 10, 55);
+            doc.text(`Reeinvestimento (Fluxo de Caixa): ${document.getElementById('reinvestimento-total').innerText}`, 10, 60);
+            doc.text(`Caixa: ${document.getElementById('caixa-total').innerText}`, 10, 65);
+            doc.text(`Saldo Retirada: ${document.getElementById('saldo-retirada').innerText}`, 10, 70);
+
+            // Adiciona Visão dos Custos
+            doc.setFontSize(14);
+            doc.text("Visão dos custos no preço unitário", 10, 80);
+            doc.setFontSize(12);
+            doc.text(`Custo Mídia/ Unidade: ${document.getElementById('custo-midia-unidade').innerText}`, 10, 90);
+            doc.text(`Custo Variável/ Unidade: ${document.getElementById('custo-variavel-unidade').innerText}`, 10, 95);
+            doc.text(`Custo Fixo/ Unidade: ${document.getElementById('custo-fixo-unidade').innerText}`, 10, 100);
+            doc.text(`MMO: ${document.getElementById('mmo-unidade').innerText}`, 10, 105);
+            doc.text(`Reeinvestimento/Unidade: ${document.getElementById('reinvestimento-unidade').innerText}`, 10, 110);
+            doc.text(`Lucro Liquido/ Unidade: ${document.getElementById('lucro-liquido-unidade').innerText}`, 10, 115);
+            doc.text(`Preço do Produto: ${document.getElementById('preco-produto-unidade').innerText}`, 10, 120);
+
+            // Salva o PDF
+            doc.save("extrato_negocio.pdf");
+        }
+
+        // Função para alternar seções
+        function showSection(sectionId) {
+            document.querySelectorAll('main > section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Mostra a seção inicial (Precificação)
+        showSection('precificacao');
+    </script>
+</body>
 </html>
