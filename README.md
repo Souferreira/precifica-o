@@ -1,6 +1,7 @@
 
 ## Descrição
 Projeto destinado a fornecer ferramentas para precificação de produtos e serviços.
+Esta em desenvolvimento.
 
 ## Tabela de Conteúdos
 - [Instalação](#instalação)
