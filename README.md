@@ -1,4 +1,3 @@
-### precifica-o
 
 ## Descrição
 Projeto destinado a fornecer ferramentas para precificação de produtos e serviços.
